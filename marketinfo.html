@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Credit Pricing Estimation</title>
+    <link rel="stylesheet" href="styles_math.css"/>
+</head>
+
+<nav>
+  <a href="home.html" class="nav-left"><div>Value for Water</div></a>
+
+  <div class="nav-right">
+    <a href="home.html">Home</a>
+
+    <div class="dropdown">
+        <a href="farmers.html">For Farmers ▾</a>
+        <div class="dropdown-content">
+            <a href="watercredits.html">WaterCredits</a>
+            <a href="waterscore.html">Water Score</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <a href="policymakers.html">For Policy-Makers ▾</a>
+        <div class="dropdown-content">
+            <a href="prediction.html">Prediction</a>
+            <a href="market.html">System Simulator</a>
+        </div>
+
+    </div>
+
+        <div class="dropdown">
+        <a href="everyone.html">For Everyone ▾</a>
+        <div class="dropdown-content">
+            <a href="game.html">The Game</a>
+        </div>
+    </div>
+
+    <a href="about.html">About Us</a>
+  </div>
+</nav>
+<body>
+<main>
+    <h1 style="text-align: center;">How does the WaterCredits system simulator work?</h1></div>
+    
+    <div class="section">
+        <p>This tool uses optimization models to compute the optimal production levels and emission reductions for each farm. In the market-based system, we used Mathematical Programming with Equilibrium Constraints(Hu & Chen, 2019), applied Karush-Kuhn-Tucker (KKT) transformation to convert the profit maximization problem of each farm into sets of constraints. In the government-regulated system, the optimization problem is solved using quadratic programming. The detailed calculation methods are shown below.</p>
+    </div>
+
+    <div class="section">
+        <h2>Table 1: Model Parameters</h2>
+        <table>
+            <tr>
+                <th>Symbol</th>
+                <th>Description</th>
+                <th>Unit</th>
+            </tr>
+            <tr>
+                <td>\( R \)</td>
+                <td>Revenue per cow per year</td>
+                <td>€/cow/year</td>
+            </tr>
+            <tr>
+                <td>\( C \)</td>
+                <td>Production cost per cow per year</td>
+                <td>€/cow/year</td>
+            </tr>
+            <tr>
+                <td>\( k \)</td>
+                <td>Emission reduction cost coefficient</td>
+                <td>€/(%)²</td>
+            </tr>
+            <tr>
+                <td>\( q_i \)</td>
+                <td>Cow quantity of farm i</td>
+                <td>Number of cows</td>
+            </tr>
+            <tr>
+                <td>\( E_i \)</td>
+                <td>Total emissions for farm i</td>
+                <td>kg</td>
+            </tr>
+            <tr>
+                <td>\( \mathcal{Cap}_i \)</td>
+                <td>Nitrogen emission baseline for farm i</td>
+                <td>kg/ha</td>
+            </tr>
+            <tr>
+                <td>\( P_N \)</td>
+                <td>Watercredit system price</td>
+                <td>€</td>
+            </tr>
+            <tr>
+                <td>\( \theta_i \)</td>
+                <td>Emission reduction ratio for farm</td>
+                <td>%</td>
+            </tr>
+            <tr>
+                <td>\( x_{ij} \)</td>
+                <td>Water credit traded from farm i to j</td>
+                <td>Number of WaterCredits</td>
+            </tr>
+            <tr>
+                <td>minp</td>
+                <td>Minimum production factor</td>
+                <td>Number of cows</td>
+            </tr>
+            <tr>
+                <td>maxp</td>
+                <td>Maximum production factor</td>
+                <td>Number of cows</td>
+            </tr>
+            <tr>
+                <td>\( Size_i \)</td>
+                <td>Size of farm i</td>
+                <td>ha</td>
+            </tr>
+            <tr>
+                <td>\( \delta_i \)</td>
+                <td>Net Watercredit (for government-controlled system)</td>
+                <td>Number of WaterCredits</td>
+            </tr>
+            <tr>
+                <td>u</td>
+                <td>Watercredit price (for government-controlled system)</td>
+                <td>€</td>
+            </tr>
+        </table>
+        
+        <p>Table 1 presents the notation used in the model. We assume that all farms share identical unit revenue (\(R\)), unit cost (\(C\)) and emission reduction cost coefficient (\(k\)), but differ in livestock quantity(\(q_i\)), total emission(\(E_i\)), and emission baseline (\(Cap_i\)).</p>
+    </div>
+
+    <div class="section">
+        <h2>Market-based system</h2>
+        <p>In a market-based system, the model determines the reduction ratio of the emissions for each farm(\(\theta_i\)), the trade of nitrogen credit between different farms(\(x_{ij}\)), the cow quantity for each farm ( \(q_i\)), and the market price(\(P_N\)). It solves the profit optimization problem as follows:</p>
+        
+        <div class="math">
+            Objective function: \[max \sum_i [R q_i - C q_i - k \theta_i^2 + P_N (\sum_{j \neq i} x_{ij} - \sum_{j \neq i} x_{ji})]\] (1)
+        </div>
+        
+        <p>Subject to</p>
+        <ol>
+            <li>Nitrogen constraints:
+                <div class="math">
+                    \[Cap_i - q_i E (1 - \theta_i) >= \sum_{j \neq i} x_{ij} - \sum_{j \neq i} x_{ji}\] (2)
+                </div>
+            </li>
+            <li>Bounds:
+                <div class="math">
+                    \[0 \leq \theta_i \leq 1, x_{ij} \geq 0\] (3)
+                </div>
+            </li>
+            <li>
+                <div class="math">
+                    \[x_{ij} \leq q_i E_i\] (4)
+                </div>
+            </li>
+            <li>
+                <div class="math">
+                    \[minp * Size \leq q_i \leq maxp * Size_i\] (5)
+                </div>
+            </li>
+            <li>
+                <div class="math">
+                    \[\sum_i (\sum_{j \neq i} x_{ij} - \sum_{j \neq i} x_{ji}) = 0\] (6)
+                </div>
+            </li>
+        </ol>
+        
+        <p>The objective function (1) represents the profit of each farm. It contains four components, i.e. livestock revenue, production cost, emission reduction cost and the revenue or cost of selling or purchasing WaterCredits. Due to the lack of detailed cost data for each specific emission reduction measure, we introduced an emission reduction cost coefficient \(k\) to estimate the cost associated with each percentage of nitrogen reduction. Emission reduction cost \(k \theta_i^2\) reflects the increasing marginal abatement costs by using the quadratic term, where costs rise with the square of the reduction rate. The \(\sum_{j \neq i} x_{ij} - \sum_{j \neq i} x_{ji}\) represent the net WaterCredits sold (positive) or purchased (negative) by farm i.</p>
+        
+        <p>The constraint (2) ensures that farms comply with the WaterCredits trading mechanism. When the nitrogen emission of farm i is lower than the baseline level, equation (2) will force \(\sum_{j\neq i}x_{ij}-\sum_{j\neq i}x_{ji}\) it to be positive, which means that the farm sells WaterCredits. Conversely, when the nitrogen emission of farm i is higher than the emission baseline, \(\sum_{j\neq i}x_{ij}-\sum_{j\neq i}x_{ji}\) will be negative, indicating that the farm must purchase WaterCredits. The constraint (3) shows the feasible bound for the reduction rate \(\theta_{i}\) and trading variable \(x_{ij}\). The constraint (4) shows the bound of credit sales, there is no credit sales without production. The constraint (5) shows the lower and upper bound of the amount of cows allowed in the farm, to prevent farms from only selling WaterCredits without producing, or having an unreasonable amount of cows. The constraint (6) is market cleaning constraint, to make sure that the total amount of sold Watercredits in the market equals to the total amount of bought Watercredits.</p>
+        
+        <p>As the objective function is convex and continuous on decision variables \(\theta_{i},x_{ij},q_{i},P_{N}\), the above optimization problem can be solved by applying the Karush-Kuhn-Tucker (KKT) conditions. To derive these conditions, we construct the Lagrangian function (7).</p>
+        
+        <div class="math">
+            \[L=R~{}q_{i}-C~{}q_{i}-k~{}\theta_{i}^{2} +P_{N}(\sum_{j\neq i}x_{ij}-\sum_{j\neq i}x_{ji})+\lambda_{t}(Cap_{i }-E_{i}(1-\theta_{i})-\sum_{j\neq i}x_{ij}+\sum_{j\neq i}x_{ji})\] 
+            \[+{\mu}_{i}\theta_{i}+{\gamma}_{i}(1-\theta_{i})+v_{ij}x_{ij}\] (7)
+        </div>
+        
+        <p>Where \(\lambda_{t},{\mu}_{i},{\gamma}_{i},v_{ij}\) are the Lagrange multipliers corresponding to the respective constraints. Based on the Lagrangian, the KKT conditions are formulated as follows:</p>
+        
+        <div class="math">
+            \[0\leq\lambda_{t}q_{i}E_{i}-2k_{t}\theta_{i}+{\mu}_{i}\perp\!{\gamma}_{i}\geq 0\] (8)
+        </div>
+        
+        <div class="math">
+            \[0\leq 2k_{t}\theta_{i}+{\gamma}_{i}-\!\lambda_{t}q_{i}E_{i}\perp\!{\mu}_{i}\geq 0\] (9)
+        </div>
+        
+        <div class="math">
+            \[0\leq\lambda_{t}-P_{N}\perp x_{ij}\geq 0\] (10)
+        </div>
+        
+        <div class="math">
+            \[0\leq(Cap_{i}-E_{i}(1-\theta_{i})-\sum_{j\neq i}x_{ij}+\sum_{j\neq i}x_{ji})\perp\lambda_{t}\geq 0\] (11)
+        </div>
+        
+        <div class="math">
+            \[C-R+\lambda_{t}E_{i}(1-\theta_{i})\perp q_{i}\geq 0\] (12)
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Government-controlled system</h2>
+        
+        <p>In a government-controlled system, the model determines the reduction ratio of the emissions( \(\theta_i\) ), the cow quantity (\(q_i\)) and the amount of WaterCredits bought or sold (\(\delta_i\)) for each farm. It solves the profit optimization problem as follows:</p>
+        
+        <div class="math">
+            Objective function: \[ \max_{\sum_i} [R q_i - C q_i - k\theta_i^2 + u\delta_i] \] (13)
+        </div>
+        
+        <p>Subject to</p>
+        <ol>
+            <li>Nitrogen balance constraints:
+                <div class="math">
+                    \[ Cap_i - q_iE (1 - \theta_i) = \delta_i \] (14)
+                </div>
+            </li>
+            <li>Production constraints:
+                <div class="math">
+                    \[ \min_p * Size_i \leq q_i \leq \max_p * Size_i \] (15)
+                </div>
+            </li>
+            <li>Bounds:
+                <div class="math">
+                    \[ 0 \leq \theta_i \leq 1 \] (16)
+                </div>
+            </li>
+        </ol>
+        
+        <p>The objective function and constraints are mostly identical to the market based-model, except the WaterCredits price \(P_N\) has been replaced by the fixed pricing decided by the government \(u\), and the Watercredit traded \(\sum_{j \neq i} x_{ij} - \sum_{j \neq i} x_{ji}\) has been replaced by a single value \(\delta_i\) to represent the Watercredit bought/sold from the government.</p>
+    </div>
+
+    <div class="section">
+        <h2>Input</h2>
+        <p>For the input parameters, except the user input from the slider bar, the revenue \(R\) and the production cost \(C\) are predicted based on historical data, using a linear regression model and a SARIMA model.</p>
+    </div>
+
+    <div class="section">
+        <h2>Model solving</h2>
+        <p>The model will be solved with the Knitro solver from AMPL. This solver is chosen because of its ability to solve non-linear optimization problems and its adaptation to MPEC problems(Melo et al., 2013).</p>
+    </div>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</main>
+<footer class="footer">
+  <p>&copy; 2025 HoTsPot | Capstone Project </p>
+</footer>
+</body>
+</html>
