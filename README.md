@@ -25,7 +25,7 @@ This folders contains the full structure and logic of the "Value for Water" webs
 
 - evaluation model calculation for the Water Score  (evaluation_model.ipynb)
 
-- javascript code for the Watercredits calculator (scriptnew.js)
+- javascript code for the WaterCredits calculator (scriptnew.js)
 
 - folders of images in the website
 
@@ -39,14 +39,14 @@ This folders contains the full structure and logic of the "Value for Water" webs
     - Make sure you have Python 3 and Streamlit installed. Then go to the corresponding folder, run: **streamlit run app.py**
     - You can also access our prediction model directly from https://hotspot-intervention-wwpysabdsmce8rlswpnkv7.streamlit.app/?utm_medium=oembed
 
-  #### To run the watercredit market simulator only: 
+  #### To run the WaterCredits market simulator only: 
     - Make sure you have Python 3 and Streamlit installed. Then go to the corresponding folder, run: **streamlit run app.py**
     - You can also access our prediction model directly from https://mpecwatercredit.streamlit.app/
 
 
 ## 2. `WOWCOW.zip`
 
-This ZIP contains the educational farming game WOWCOW, designed to illustrate WaterCredit machnism. It is adapted from the open-source game **Farmhand** by Jeremy Kahn, with modifications to include Watercredits and sustainable farming practices.
+This ZIP contains the educational farming game WOWCOW, designed to illustrate WaterCredits machnism. It is adapted from the open-source game **Farmhand** by Jeremy Kahn, with modifications to include Watercredits and sustainable farming practices.
 
 ### How to Run
 
