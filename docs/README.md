@@ -1,1 +1,0 @@
-# HoTsPot-Hosted
